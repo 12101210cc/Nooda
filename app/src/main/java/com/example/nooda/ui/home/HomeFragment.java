@@ -147,10 +147,11 @@ public class HomeFragment extends Fragment {
         for (int i = 0; i < namesList.size(); i++) {
             Button button = new Button(getContext());
             button.setText(namesList.get(i));
-            button.setTextColor(Color.GREEN);
-            button.setBackgroundColor(getContext().getColor(R.color.alpha));
-            button.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
-            button.setTypeface(typeface, Typeface.BOLD);
+            //button.setTextColor(Color.GREEN);
+            button.setBackground(getContext().getDrawable(R.drawable.border));
+            //button.setBackgroundColor(getContext().getColor(R.color.alpha));
+            //button.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+            button.setTypeface(typeface);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -194,7 +195,7 @@ public class HomeFragment extends Fragment {
             int index = i;
             Button button = new Button(getContext());
             button.setText(selectedList.get(i));
-            button.setTypeface(typeface, Typeface.BOLD);
+            button.setTypeface(typeface);
             button.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -250,7 +251,7 @@ public class HomeFragment extends Fragment {
         for (int i = 0; i < numberList.size(); i++) {
             Button button = new Button(getContext());
             button.setText(numberList.get(i));
-            button.setTextColor(getContext().getColor(R.color.pencil_gray));
+           // button.setTextColor(getContext().getColor(R.color.pencil_gray));
             //button.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
             button.setMaxLines(1);
             button.setTypeface(typeface);
@@ -263,7 +264,7 @@ public class HomeFragment extends Fragment {
                 button.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
                 button.setAutoSizeTextTypeUniformWithConfiguration(
                         5, // Minimum text size in sp
-                        100, // Maximum text size in sp
+                        50, // Maximum text size in sp
                         5, // Step size (granularity) in sp
                         TypedValue.COMPLEX_UNIT_SP);
 
