@@ -10,4 +10,5 @@
     <color name="alpha">#00FFFFFF</color>
     <color name="alpha_little">#70FFFFFF</color>
     <color name="pencil_gray">#FF808080</color>
+    <color name="pen_blue">#FF010F66</color>
 </resources>

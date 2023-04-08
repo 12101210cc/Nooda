@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,8 +43,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
@@ -60,25 +63,37 @@ public class HomeFragment extends Fragment {
     private TextView addNewText;
     private EditText addNewEdit;
     private Button addNewBt;
+    private TextView addToList;
     private Button delBt;
     private long startTime;
     private Handler backgroundHandler;
+    private TextView clock;
+    private ScrollView scrollView2;
+    private Boolean isAdding = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
         indexLinearLayout = binding.linearLayoutIndex;
         namesLinearLayout = binding.linearLayoutNames;
         selectedLinearLayout = binding.linearLayoutSelect;
         numberLinearLayout = binding.linearLayoutNumber;
+        clock = binding.clock;
+        addToList = binding.addToList;
+        scrollView2 = binding.scrollView2;
+
 
         addNewText = binding.addText;
         addNewEdit = binding.addEdit;
         addNewBt = binding.addBt;
-        delBt = binding.delBt;
+
+        addNewText.setVisibility(View.GONE);
+        addNewEdit.setVisibility(View.GONE);
+        addNewBt.setVisibility(View.GONE);
+
+        scrollView2.setVisibility(View.GONE);
 
         return root;
     }
@@ -90,7 +105,35 @@ public class HomeFragment extends Fragment {
         addNewText.setTypeface(typeface);
         addNewEdit.setTypeface(typeface);
         addNewBt.setTypeface(typeface);
-        delBt.setTypeface(typeface);
+        clock.setTypeface(typeface);
+        addToList.setTypeface(typeface);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date(); // Use the current date and time
+        String formattedDateTime = dateFormat.format(date);
+        clock.setText(formattedDateTime);
+
+        addToList.setBackgroundColor(getContext().getColor(R.color.alpha));
+
+        addToList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isAdding) {
+                    addNewText.setVisibility(View.VISIBLE);
+                    addNewEdit.setVisibility(View.VISIBLE);
+                    addNewBt.setVisibility(View.VISIBLE);
+                    scrollView2.setVisibility(View.VISIBLE);
+                    isAdding = true;
+                } else {
+                    isAdding = false;
+                    addNewText.setVisibility(View.GONE);
+                    addNewEdit.setVisibility(View.GONE);
+                    addNewBt.setVisibility(View.GONE);
+                    scrollView2.setVisibility(View.GONE);
+                }
+
+            }
+        });
 
         loadListsFromFile();
 
@@ -117,12 +160,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        delBt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     private void showEmptyNameDialog() {
@@ -151,7 +188,7 @@ public class HomeFragment extends Fragment {
             button.setBackground(getContext().getDrawable(R.drawable.border));
             //button.setBackgroundColor(getContext().getColor(R.color.alpha));
             //button.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
-            button.setTypeface(typeface);
+            button.setTypeface(typeface, Typeface.BOLD);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -166,7 +203,7 @@ public class HomeFragment extends Fragment {
 
             // Set button size
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.height = 200; // Height in pixels, set the desired size
+            layoutParams.height = 100; // Height in pixels, set the desired size
             button.setLayoutParams(layoutParams);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -224,7 +261,7 @@ public class HomeFragment extends Fragment {
 
             // Set button size
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.height = 200; // Height in pixels, set the desired size
+            layoutParams.height = 100; // Height in pixels, set the desired size
             button.setLayoutParams(layoutParams);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -257,7 +294,7 @@ public class HomeFragment extends Fragment {
             button.setTypeface(typeface);
             // Set button size
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.height = 200; // Height in pixels, set the desired size
+            layoutParams.height = 100; // Height in pixels, set the desired size
             button.setLayoutParams(layoutParams);
             button.setBackgroundColor(getContext().getColor(R.color.alpha));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -466,5 +503,6 @@ public class HomeFragment extends Fragment {
             }
         };
     }
+
 
 }

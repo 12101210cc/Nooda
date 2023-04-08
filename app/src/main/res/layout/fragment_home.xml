@@ -16,23 +16,67 @@
 <!--        app:layout_constraintBottom_toBottomOf="parent"-->
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintEnd_toEndOf="parent" />-->
-    <Button
-        android:id="@+id/del_bt"
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_vertical_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3" />
+
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_vertical_7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.7" />
+
+
+
+    <TextView
+        android:id="@+id/clock"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="刪除"
-        android:textStyle="bold"
-        android:backgroundTint="@color/alpha"
-        android:textColor="@color/black"
-        android:maxLines="1"
-        android:autoSizeTextType="uniform"
-        android:autoSizeMinTextSize="1sp"
+        android:gravity="center"
+        android:textColor="@color/pen_blue"
         android:autoSizeMaxTextSize="100sp"
+        android:autoSizeMinTextSize="1sp"
         android:autoSizeStepGranularity="2sp"
-        app:layout_constraintEnd_toStartOf="@+id/add_text"
-        app:layout_constraintStart_toStartOf="parent"
+        android:autoSizeTextType="uniform"
+        android:text="2023/04/08 12:00:00"
+        app:layout_constraintBottom_toTopOf="@id/add_text"
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical_7"
+        app:layout_constraintStart_toStartOf="@id/guideline_vertical_3"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/guideline_horizontal"/>
+        app:layout_constraintVertical_bias="0.0"
+        android:format24Hour="yyyy/MM/dd"
+        />
+
+    <ImageButton
+        android:id="@+id/add_customer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:background="@color/alpha"
+        app:layout_constraintBottom_toTopOf="@id/add_text"
+        app:layout_constraintEnd_toStartOf="@id/add_to_list"
+        app:layout_constraintStart_toEndOf="@id/guideline_vertical_7"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"/>
+
+    <TextView
+        android:id="@+id/add_to_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="+"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@id/add_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/add_customer"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"/>
 
     <TextView
         android:id="@+id/add_text"
@@ -48,8 +92,8 @@
         android:text="新增客戶名:"
         app:layout_constraintBottom_toTopOf="@id/guideline_horizontal"
         app:layout_constraintEnd_toStartOf="@+id/add_edit"
-        app:layout_constraintStart_toEndOf="@+id/del_bt"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clock"
         app:layout_constraintVertical_bias="0.0" />
 
     <EditText
@@ -58,7 +102,7 @@
         android:layout_height="0dp"
         app:layout_constraintEnd_toStartOf="@+id/add_bt"
         app:layout_constraintStart_toEndOf="@+id/add_text"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clock"
         app:layout_constraintBottom_toTopOf="@id/guideline_horizontal"/>
 
     <Button
@@ -76,16 +120,23 @@
         android:autoSizeStepGranularity="2sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/add_edit"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clock"
         app:layout_constraintBottom_toTopOf="@id/guideline_horizontal"/>
-    
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.1" />
-    
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_horizontal_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_vertical"
         android:layout_width="wrap_content"
@@ -98,7 +149,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.9" />
+        app:layout_constraintGuide_percent="1" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_vertical_2"
@@ -144,7 +195,7 @@
 
         </LinearLayout>
     </ScrollView>
-    
+
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
