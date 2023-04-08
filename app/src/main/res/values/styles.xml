@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!-- ... -->
+    <style name="MyBottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">@drawable/paper</item>
+        <!-- Add any other customization attributes you need -->
+    </style>
+</resources>

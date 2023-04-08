@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="alpha">#00FFFFFF</color>
     <color name="alpha_little">#70FFFFFF</color>
+    <color name="pencil_gray">#FF808080</color>
 </resources>

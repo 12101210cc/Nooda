@@ -8,10 +8,14 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -19,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -41,19 +46,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class HomeFragment extends Fragment {
-
     private static final String TAG = "HomeFragment";
     private static final boolean DEBUG = false;
     private FragmentHomeBinding binding;
+    private ArrayList<String> indexList = new ArrayList<>();
     private ArrayList<String> namesList = new ArrayList<>();
     private ArrayList<String> selectedList = new ArrayList<>();
     private ArrayList<String> numberList = new ArrayList<>();
+    private LinearLayout indexLinearLayout;
     private LinearLayout selectedLinearLayout;
     private LinearLayout numberLinearLayout;
     private LinearLayout namesLinearLayout;
     private TextView addNewText;
     private EditText addNewEdit;
     private Button addNewBt;
+    private Button delBt;
+    private long startTime;
+    private Handler backgroundHandler;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -61,6 +70,7 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        indexLinearLayout = binding.linearLayoutIndex;
         namesLinearLayout = binding.linearLayoutNames;
         selectedLinearLayout = binding.linearLayoutSelect;
         numberLinearLayout = binding.linearLayoutNumber;
@@ -68,6 +78,7 @@ public class HomeFragment extends Fragment {
         addNewText = binding.addText;
         addNewEdit = binding.addEdit;
         addNewBt = binding.addBt;
+        delBt = binding.delBt;
 
         return root;
     }
@@ -79,6 +90,7 @@ public class HomeFragment extends Fragment {
         addNewText.setTypeface(typeface);
         addNewEdit.setTypeface(typeface);
         addNewBt.setTypeface(typeface);
+        delBt.setTypeface(typeface);
 
         loadListsFromFile();
 
@@ -104,6 +116,13 @@ public class HomeFragment extends Fragment {
                 updateNamesList();
             }
         });
+
+        delBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private void showEmptyNameDialog() {
@@ -120,7 +139,6 @@ public class HomeFragment extends Fragment {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
 
     public void updateNamesList() {
         namesLinearLayout.removeAllViews();
@@ -172,10 +190,35 @@ public class HomeFragment extends Fragment {
 
 
         for (int i = 0; i < selectedList.size(); i++) {
+
+            int index = i;
             Button button = new Button(getContext());
             button.setText(selectedList.get(i));
             button.setTypeface(typeface, Typeface.BOLD);
-            button.setClickable(false);
+            button.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            // Start counting the time when the button is pressed
+                            startTime = System.currentTimeMillis();
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            // Calculate the duration of the press when the button is released
+                            long duration = System.currentTimeMillis() - startTime;
+
+                            if (duration < 500) {
+                                // Short press
+                                onShortPress(view);
+                            } else {
+                                // Long press
+                                onLongPress(view, index);
+                            }
+                            break;
+                    }
+                    return true; // Indicate that the event is consumed
+                }
+            });
             button.setMaxLines(1);
 
             // Set button size
@@ -207,10 +250,10 @@ public class HomeFragment extends Fragment {
         for (int i = 0; i < numberList.size(); i++) {
             Button button = new Button(getContext());
             button.setText(numberList.get(i));
-            button.setTextColor(Color.BLUE);
-            button.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+            button.setTextColor(getContext().getColor(R.color.pencil_gray));
+            //button.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
             button.setMaxLines(1);
-            button.setTypeface(typeface, Typeface.BOLD);
+            button.setTypeface(typeface);
             // Set button size
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.height = 200; // Height in pixels, set the desired size
@@ -367,6 +410,60 @@ public class HomeFragment extends Fragment {
             }
         }
         return list;
+    }
+
+    // Inside an activity or fragment
+    private void showDialogAndRemove(String message, int removeIndex) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(message);
+
+        // Set the OK button action
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Perform any actions you want to execute when the OK button is clicked
+                numberList.remove(removeIndex);
+                selectedList.remove(removeIndex);
+                updateNumberList();
+                updateSelectedList();
+            }
+        });
+
+        // Set the Cancel button action
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Perform any actions you want to execute when the Cancel button is clicked
+                dialog.dismiss();
+            }
+        });
+
+        // Create and show the dialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+
+
+    private void onShortPress(View view) {
+        // Handle short press action
+
+    }
+
+    private void onLongPress(View view, int removeIndex) {
+        // Handle long press action
+        showDialogAndRemove("確定刪除第" + (removeIndex+1) + "列?", removeIndex);
+    }
+
+    private void initHandler() {
+        HandlerThread handlerThread = new HandlerThread("UpdateSelectedListThread");
+        handlerThread.start();
+        backgroundHandler = new Handler(handlerThread.getLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                updateSelectedList();
+            }
+        };
     }
 
 }
